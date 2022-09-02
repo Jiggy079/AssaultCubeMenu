@@ -197,6 +197,8 @@ void gui::Render() noexcept {
 	static int pid;
 	static bool attached = false;
 	static int clicked = 0;
+	static bool godMode = false;
+
 	if (ImGui::CollapsingHeader("Setup")) {
 		if (attached) {
 			ImGui::BeginDisabled();
@@ -233,7 +235,6 @@ void gui::Render() noexcept {
 
 	if (ImGui::CollapsingHeader("Health/Armour")) {
 		// god mode
-		static bool godMode = false;
 		ImGui::Checkbox("God Mode", &godMode);
 		if (godMode) {
 			ImGui::BeginDisabled(true);
@@ -255,6 +256,12 @@ void gui::Render() noexcept {
 
 	if (!attached) {
 		ImGui::EndDisabled();
+	}
+
+	if (ImGui::CollapsingHeader("Debug")) {
+		ImGui::Text(cheat.isAttached() ? "cheat->attached : true" : "cheat->attached : false");
+		ImGui::Text("playerBase  :  ");
+		ImGui::Text(godMode ? "godMode : true" : "godMode : false");
 	}
 	
 
