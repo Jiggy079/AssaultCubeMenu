@@ -11,8 +11,8 @@ bool Cheat::attach(int pid) {
 		return false;
 	}
 	else {
-		Cheat::read((LPCVOID)playerBasePtr, &playerBase, 32);
 		this->attached = true;
+		Cheat::read((LPCVOID)playerBasePtr, &playerBase, 32);
 		return true;
 	}
 
@@ -32,14 +32,24 @@ bool Cheat::write(LPVOID lpBaseAddress, void* lpBuffer, SIZE_T nSize, SIZE_T* lp
 }
 
 void Cheat::godModeThread(bool* godMode) noexcept {
+	bool update = false;
 	int startingHealth = Cheat::getHealth();
 	int currentHealth;
-	while (*godMode == true) {
-		currentHealth = Cheat::getHealth();
-		if (currentHealth != startingHealth) {
-			Cheat::setHealth(startingHealth);
+	while (true) {
+		if (update) {
+			startingHealth = Cheat::getHealth();
+			update = false;
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		if (*godMode) {
+			currentHealth = Cheat::getHealth();
+			if (currentHealth != startingHealth) {
+				Cheat::setHealth(startingHealth);
+			}
+		}
+		else {
+			update = true;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	return;
 }
